@@ -27,7 +27,7 @@ def scrap(link,ott):
         else:
             print("data-hash attribute present nahi hai.")
             cookies()
-            scrap(url)
+            scrap(url,ott)
     else:
         print(f"Request failed with status code: {response.status_code}")
 
