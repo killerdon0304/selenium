@@ -1,5 +1,6 @@
 import json
 import time
+from bs4 import BeautifulSoup
 from req import scrap
 
 baseurl = "https://netfree2.cc/mobile/"
