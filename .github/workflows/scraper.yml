@@ -2,8 +2,8 @@ name: Daily Scraper
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Runs daily at 00:00 UTC
-  workflow_dispatch:     # Allows manual trigger
+    - cron: '0 0 * * *'  # daily at midnight UTC
+  workflow_dispatch:     # manual trigger
 
 jobs:
   run-scraper:
@@ -13,7 +13,7 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v3
 
-    - name: Set up Python
+    - name: Set up Python 3.11
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
@@ -23,21 +23,19 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Install Chrome and Chromedriver
+    - name: Check Chrome & Chromedriver versions
       run: |
-        sudo apt-get update
-        sudo apt-get install -y chromium-browser chromium-chromedriver
-        sudo ln -s /usr/lib/chromium-browser/chromedriver /usr/bin/chromedriver
+        chromium-browser --version
+        chromedriver --version
 
-    - name: Run scraper
+    - name: Run scraping scripts
       run: |
         python cookies.py
         python main.py
 
-    - name: Commit and push if changed
+    - name: Commit and push changes if any
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git add *.json
-        git commit -m "🔄 Daily data update $(date +'%Y-%m-%d')" || echo "No changes to commit"
-        git push
+        git diff --cached --quiet || (git commit -m "🔄 Daily data update $(date +'%Y-%m-%d')" && git push)
