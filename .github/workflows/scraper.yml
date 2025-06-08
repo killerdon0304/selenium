@@ -30,7 +30,6 @@ jobs:
 
     - name: Run scraping scripts
       run: |
-        # python cookies.py
         python main.py
 
     - name: Commit and push changes if any
